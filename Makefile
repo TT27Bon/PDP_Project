@@ -6,11 +6,11 @@ CC = mpicc
 CFLAGS = -std=c99 -g -O3
 LIBS = -lm
 
-BIN = simulator
+BIN = mc
 
 all: $(BIN)
 
-simulator: simulate.o prop.o 
+mc: simulate.o prop.o 
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 simulate.o: simulate.c prop.h

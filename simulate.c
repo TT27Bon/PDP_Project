@@ -58,6 +58,10 @@ int main(int argc, char* argv[]) {
 
     // start timer
     double start_time = MPI_Wtime();
+    double one_quarter_time = 0;
+    double half_time = 0;
+    double three_quarter_time = 0;
+    double final_time = 0;
 
     // for each process, they will execute the local experiments and form the final vector x at time T
     for (int i=0; i<local_experiments; i++) {
@@ -101,7 +105,20 @@ int main(int argc, char* argv[]) {
 
             // update the current time t
             t += tau;
+            if (t >= 25 && t <= 26) {
+                one_quarter_time = MPI_Wtime() - start_time;
+            }
+
+            if (t >= 50 && t <= 51) {
+                half_time = MPI_Wtime() - start_time;
+            }
+
+            if (t >= 75 && t <= 76) {
+                three_quarter_time = MPI_Wtime() - start_time;
+            }
         }
+
+        final_time = MPI_Wtime() - start_time;
 
         // store the final state vector x
         for (int j=0; j<7; j++) {
@@ -165,6 +182,12 @@ int main(int argc, char* argv[]) {
     double time_spent = MPI_Wtime() - start_time;
     double max_time_spent = 0;
     MPI_Reduce(&time_spent, &max_time_spent, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+    // print the quarter time spent
+    printf("I am process %d, quarter time spent: %f\n", rank, one_quarter_time);
+    printf("I am process %d, half time spent: %f\n", rank, half_time);
+    printf("I am process %d, three quarter time spent: %f\n", rank, three_quarter_time);
+    printf("I am process %d, final time spent: %f\n", rank, final_time);
 
     // write the final bin counts to the output file
     if (rank == 0) {
